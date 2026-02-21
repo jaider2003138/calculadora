@@ -62,7 +62,7 @@ def crear_matriz(nombre):
 
 def main():
     while True:
-        print("\n========== MENÚ MATRICES ==========")
+        print("\n MENÚ MATRICES")
         print("1. Sumar matrices")
         print("2. Restar matrices")
         print("3. Multiplicar matrices")
@@ -82,7 +82,7 @@ def main():
         try:
             match opcion:
 
-                # ---------------- MATRICES ----------------
+                # MATRICES
 
                 case "1":
                     A = crear_matriz("A")
@@ -108,7 +108,7 @@ def main():
                     resultado = dividir_matrices(A, B)
                     print("Resultado:", resultado)
 
-                # ---------------- ESCALARES ----------------
+                # ESCALARES
 
                 case "5":
                     A = crear_matriz("A")
@@ -134,7 +134,7 @@ def main():
                     resultado = dividir_escalar(A, k)
                     print("Resultado:", resultado)
 
-                # ---------------- INDIVIDUALES ----------------
+                # INDIVIDUALES 
 
                 case "9":
                     A = crear_matriz("A")

@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import random
+from utils.history_operations import guardar_operacion
+
 
 from logic.matriz_operations import (
     sumar_matrices,
@@ -125,9 +127,7 @@ class MatrixApp:
             self.scalar_label.grid_remove()
             self.scalar_entry.grid_remove()
 
-    # =========================
     # GENERAR MATRICES
-    # =========================
     def generate_matrices(self):
         for frame in [self.frame_A, self.frame_B, self.result_frame]:
             for widget in frame.winfo_children():
@@ -199,51 +199,78 @@ class MatrixApp:
             ).pack(pady=10)
 
     # CALCULAR
+
     def calculate(self):
-        try:
-            op = self.operation.get()
-            A = self.get_matrix(self.entries_A)
+     try:
+        op = self.operation.get()
+        A = self.get_matrix(self.entries_A)
 
-            if op in ["Sumar", "Restar", "Multiplicar", "Dividir"]:
-                B = self.get_matrix(self.entries_B)
+        B = None
+        k = None
 
-            if "Escalar" in op:
-                k = float(self.scalar_entry.get())
+        if op in ["Sumar", "Restar", "Multiplicar", "Dividir"]:
+            B = self.get_matrix(self.entries_B)
 
-            if op == "Sumar":
-                result = sumar_matrices(A, B)
-            elif op == "Restar":
-                result = restar_matrices(A, B)
-            elif op == "Multiplicar":
-                result = multiplicar_matrices(A, B)
-            elif op == "Dividir":
-                result = dividir_matrices(A, B)
-            elif op == "Sumar Escalar":
-                result = sumar_escalar(A, k)
-            elif op == "Restar Escalar":
-                result = restar_escalar(A, k)
-            elif op == "Multiplicar Escalar":
-                result = multiplicar_escalar(A, k)
-            elif op == "Dividir Escalar":
-                result = dividir_escalar(A, k)
-            elif op == "Determinante":
-                result = calcular_determinante(A)
-            elif op == "Inversa":
-                result = calcular_matriz_inversa(A)
-            elif op == "Transpuesta":
-                result = calcular_transpuesta(A)
-            elif op == "Traza":
-                result = calcular_traza(A)
-            else:
-                messagebox.showwarning("Aviso", "Seleccione una operación")
-                return
+        if "Escalar" in op:
+            k = float(self.scalar_entry.get())
 
-            self.show_result_matrix(result)
+        if op == "Sumar":
+            result = sumar_matrices(A, B)
 
-        except MatrixError as e:
-            messagebox.showerror("Error", str(e))
-        except ValueError:
-            messagebox.showerror("Error", "Ingrese valores válidos")
+        elif op == "Restar":
+            result = restar_matrices(A, B)
+
+        elif op == "Multiplicar":
+            result = multiplicar_matrices(A, B)
+
+        elif op == "Dividir":
+            result = dividir_matrices(A, B)
+
+        elif op == "Sumar Escalar":
+            result = sumar_escalar(A, k)
+
+        elif op == "Restar Escalar":
+            result = restar_escalar(A, k)
+
+        elif op == "Multiplicar Escalar":
+            result = multiplicar_escalar(A, k)
+
+        elif op == "Dividir Escalar":
+            result = dividir_escalar(A, k)
+
+        elif op == "Determinante":
+            result = calcular_determinante(A)
+
+        elif op == "Inversa":
+            result = calcular_matriz_inversa(A)
+
+        elif op == "Transpuesta":
+            result = calcular_transpuesta(A)
+
+        elif op == "Traza":
+            result = calcular_traza(A)
+
+        else:
+            messagebox.showwarning("Aviso", "Seleccione una operación")
+            return
+
+        # GUARDAR EN HISTORIAL
+        guardar_operacion(
+            operacion=op,
+            A=A,
+            B=B,
+            escalar=k,
+            resultado=result
+        )
+
+        self.show_result_matrix(result)
+
+     except MatrixError as e:
+        messagebox.showerror("Error", str(e))
+
+     except ValueError:
+        messagebox.showerror("Error", "Ingrese valores válidos")
+     
 
     def reset_all(self):
         self.rows.delete(0, tk.END)
